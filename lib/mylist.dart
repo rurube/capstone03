@@ -1,26 +1,38 @@
-import 'package:capstone_design_project/list_register.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:capstone_design_project/list_register.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'API.dart';
+import 'partslist.dart';
 
-class Dice extends StatelessWidget {
-  const Dice ({Key? key}) : super(key: key);
+class List extends StatefulWidget {
+  final String idtext;
+  const List(this.idtext, {super.key});
 
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ListViewPage(),
-    );
+  State<List> createState() => _ListState();
+}
+
+class _ListState extends State<List> {
+  Future<Parts> getList() async{
+    var resName;
+    late Parts parts;
+    try{
+      var res = await http.post(
+        Uri.parse(API.callinfo),
+        body:{
+          'id' : widget.idtext,
+        });
+        resName = jsonDecode(res.body);
+        parts = Parts(
+          username: resName[0]["name"],);
+    }catch(e){
+      print(e);
+    }
+    return parts;
   }
-}
-
-class ListViewPage extends StatefulWidget {
-  const ListViewPage({Key? key}) : super(key: key);
-
-  @override
-  State<ListViewPage> createState() => _ListViewPageState();
-}
-
-class _ListViewPageState extends State<ListViewPage> {
 
   var titleList = [
     'Dentist',
@@ -117,13 +129,13 @@ class _ListViewPageState extends State<ListViewPage> {
         title: const Text(
           'ItemList',
           style: TextStyle(
-              color: Colors.grey),
+            color: Colors.grey),
         ),
         backgroundColor: Colors.white,
         elevation: 5,
         iconTheme: IconThemeData(
           color: Colors.blue),
-        ),
+      ),
       body: ListView.builder(
         itemCount: titleList.length,
         itemBuilder: (context, index) {
@@ -177,81 +189,85 @@ class _ListViewPageState extends State<ListViewPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('fab눌림');
+          var id = widget.idtext;
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => listregister() ));
+              builder: (context) => listregister(id) ));
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
 
       ),
-
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('image/games.png'),
-                backgroundColor: Colors.white,
-              ),
-              otherAccountsPictures: [
-                CircleAvatar(
-                  backgroundImage: AssetImage('assets/swimmer.png'),
-                  backgroundColor: Colors.white,
+        child:FutureBuilder(
+          future: getList(),
+          builder: (context, AsyncSnapshot<Parts> snapshot){
+            if(snapshot.hasData == false){
+              return CircularProgressIndicator();
+            }
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                UserAccountsDrawerHeader(
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: AssetImage('image/games.png'),
+                    backgroundColor: Colors.white,
+                  ),
+                  otherAccountsPictures: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/swimmer.png'),
+                      backgroundColor: Colors.white,
+                    ),
+                    // CircleAvatar(
+                    //   backgroundImage: AssetImage('assets/swimmer.png'),
+                    //   backgroundColor: Colors.white,
+                    // ),
+                  ],
+                  accountName: Text('${snapshot.data?.username.toString()}'),
+                  accountEmail: Text(widget.idtext),
+                  onDetailsPressed:(){
+                    print('arrow is clicked');
+                  },
+                  decoration: BoxDecoration(
+                      color: Colors.lightBlue,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40.0),
+                        bottomRight: Radius.circular(40.0),
+                      )
+                  ),
                 ),
-                // CircleAvatar(
-                //   backgroundImage: AssetImage('assets/swimmer.png'),
-                //   backgroundColor: Colors.white,
-                // ),
+                ListTile(
+                  leading: Icon(Icons.home,
+                    color: Colors.grey[850],
+                  ),
+                  title: Text('Home'),
+                  onTap: (){
+                    print('Home is clicked');
+                  },
+                  trailing: Icon(Icons.add),
+                ),
+                ListTile(
+                  leading: Icon(Icons.settings,
+                    color: Colors.grey[850],
+                  ),
+                  title: Text('Setting'),
+                  onTap: (){
+                    print('Setting is clicked');
+                  },
+                  trailing: Icon(Icons.add),
+                ),
+                ListTile(
+                  leading: Icon(Icons.question_answer,
+                    color: Colors.grey[850],),
+                  title: Text('Q&A'),
+                  onTap: (){
+                    print('Q&A is clicked');
+                  },
+                  trailing: Icon(Icons.add),
+                ),
               ],
-              accountName: Text('jueun'),
-              accountEmail: Text('juueun.park@gmail.com'),
-              onDetailsPressed:(){
-                print('arrow is clicked');
-              },
-              decoration: BoxDecoration(
-                  color: Colors.lightBlue,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40.0),
-                    bottomRight: Radius.circular(40.0),
-                  )
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home,
-                color: Colors.grey[850],
-              ),
-              title: Text('Home'),
-              onTap: (){
-                print('Home is clicked');
-              },
-              trailing: Icon(Icons.add),
-            ),
-            ListTile(
-              leading: Icon(Icons.settings,
-                color: Colors.grey[850],
-              ),
-              title: Text('Setting'),
-              onTap: (){
-                print('Setting is clicked');
-              },
-              trailing: Icon(Icons.add),
-            ),
-            ListTile(
-              leading: Icon(Icons.question_answer,
-                color: Colors.grey[850],),
-              title: Text('Q&A'),
-              onTap: (){
-                print('Q&A is clicked');
-              },
-              trailing: Icon(Icons.add),
-            ),
-          ],
-        ),
+            );
+          },
+        )
       ),
     );
-
-  }
-
-
-}
+  }}

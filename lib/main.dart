@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'dice.dart';
+import 'mylist.dart';
 import 'package:http/http.dart' as http;
 import 'API.dart';
 import 'register.dart';
@@ -36,6 +36,7 @@ class _MyPageState extends State<MyPage> {
   TextEditingController controller2 = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController type = TextEditingController();
+  late String idtext;
 
   userLogin() async{
     try{
@@ -49,9 +50,10 @@ class _MyPageState extends State<MyPage> {
         var resLogin = jsonDecode(res.body);
         if(resLogin['success'] == true){
           Fluttertoast.showToast(msg: 'Login successfully');
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Dice()));
+          var idtext = controller.text.trim();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => List(idtext)));
         }else{
-          Fluttertoast.showToast(msg: 'Please check your email and password');
+          Fluttertoast.showToast(msg: 'Please check your id and password');
         }
       }
     } catch(e){
