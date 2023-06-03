@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:capstone_design_project/partslist.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_design_project/list_register.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'API.dart';
-import 'partslist.dart';
-
+import 'parts.dart';
 class List extends StatefulWidget {
   final String idtext;
   const List(this.idtext, {super.key});
@@ -16,9 +16,10 @@ class List extends StatefulWidget {
 }
 
 class _ListState extends State<List> {
-  Future<Parts> getList() async{
+
+  Future<Names> getList() async{
     var resName;
-    late Parts parts;
+    late Names names;
     try{
       var res = await http.post(
         Uri.parse(API.callinfo),
@@ -26,12 +27,29 @@ class _ListState extends State<List> {
           'id' : widget.idtext,
         });
         resName = jsonDecode(res.body);
-        parts = Parts(
+        names = Names(
           username: resName[0]["name"],);
     }catch(e){
       print(e);
     }
-    return parts;
+    return names;
+  }
+
+  Future<List> getParts() async{
+    var response = await http.post(Uri.parse(API.partsload), body:{'id':widget.idtext},);
+    if (response.statusCode == 200) {
+
+      final items = json.decode(response.body).cast<Map<String, dynamic>>();
+
+      Future<List> partList = items.map<Parts>((json) {
+        return Parts.fromJson(json);
+      }).toList();
+
+      return partList;
+    }
+    else {
+      throw Exception('Failed to load data from Server.');
+    }
   }
 
   var titleList = [
@@ -136,71 +154,33 @@ class _ListState extends State<List> {
         iconTheme: IconThemeData(
           color: Colors.blue),
       ),
-      body: ListView.builder(
-        itemCount: titleList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              debugPrint(titleList[index]);
-              showPopup(context, titleList[index], imageList[index],
-                  description[index]);
-            },
-            child: Card(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Image.asset(imageList[index]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Text(titleList[index],
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: width,
-                          child: Text(
-                            description[index],
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey[500]
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      body: FutureBuilder<List<Parts>>(
+        future: getParts(),
+        builder: (context, snapshot){
+          if(!snapshot.hasData) return Center(
+            child: CircularProgressIndicator(),
+          );
+          return ListView(
+            children: snapshot.data
+            .map((data)=>Column(children: <Widget> [
+              GestureDetector(
+                onTap: (){showPopup(context, data.name, data.image, data.msg);},
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(padding: EdgeInsets.fromLTRB(20, 5, 0, 5),
+                    child: Text(data.username,
+                    style: TextStyle(fontSize: 21),
+                        textAlign: TextAlign.left))
+                  ],),),
+            ],)),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('fab눌림');
-          var id = widget.idtext;
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => listregister(id) ));
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-
       ),
       drawer: Drawer(
         child:FutureBuilder(
           future: getList(),
-          builder: (context, AsyncSnapshot<Parts> snapshot){
+          builder: (context, AsyncSnapshot<Names> snapshot){
             if(snapshot.hasData == false){
               return CircularProgressIndicator();
             }

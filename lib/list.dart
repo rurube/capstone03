@@ -261,8 +261,9 @@ class _ListState extends State<List> {
       floatingActionButton: FloatingActionButton(
       onPressed: () {
         print('fab눌림');
+        String id = widget.idtext;
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => listregister() ));
+            builder: (context) => listregister(id) ));
       },
       tooltip: 'Increment',
       child: const Icon(Icons.add),

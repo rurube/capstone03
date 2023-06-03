@@ -1,7 +1,7 @@
-class Parts{
+class Names{
   final String username; // 이름
 
-  Parts({
+  Names({
     required this.username,
   });
 

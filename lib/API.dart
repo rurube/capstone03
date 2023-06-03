@@ -5,5 +5,6 @@ class API{
   static const signin = "$hostConnect/SignIn.php";
   static const callinfo = "$hostConnect/call_info.php";
   static const partsinsert = "$hostConnect/parts_insert.php";
+  static const partsload = "$hostConnect/parts_load.php";
 
 }
