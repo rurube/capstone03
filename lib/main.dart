@@ -51,7 +51,7 @@ class _MyPageState extends State<MyPage> {
         if(resLogin['success'] == true){
           Fluttertoast.showToast(msg: 'Login successfully');
           var idtext = controller.text.trim();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => List(idtext)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Mylist(idtext)));
         }else{
           Fluttertoast.showToast(msg: 'Please check your id and password');
         }

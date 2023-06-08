@@ -63,7 +63,7 @@ class _listregisterState extends State<listregister> {
           if (respin['success'] == true) {
             Fluttertoast.showToast(msg: 'Insert Success');
             var id = widget.id;
-            Navigator.push(context, MaterialPageRoute(builder: (context) => List(id)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Mylist(id)));
           } else {
             print(loc.text);
             Fluttertoast.showToast(msg: 'error');
@@ -186,7 +186,7 @@ class _listregisterState extends State<listregister> {
                                   OutlinedButton(
                                     onPressed: () {
                                       var id = widget.id;
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => List(id)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Mylist(id)));
                                     },
                                     child: Text('Cancle'),
                                   )
