@@ -31,10 +31,10 @@ class _ListregisterState extends State<Listregister> {
     XFile? _file;
 
     if (isCamera) {
-      _file = await ImagePicker().pickImage(source: ImageSource.camera, maxHeight: 75, imageQuality: 10,);
+      _file = await ImagePicker().pickImage(source: ImageSource.camera, maxHeight: 150, imageQuality: 30,);
 
     } else {
-      _file = await ImagePicker().pickImage(source: ImageSource.gallery, maxHeight: 75, imageQuality: 10,);
+      _file = await ImagePicker().pickImage(source: ImageSource.gallery, maxHeight: 150, imageQuality: 30,);
     }
 
     if (_file != null) {
@@ -66,7 +66,7 @@ class _ListregisterState extends State<Listregister> {
             var id = widget.id;
             Navigator.push(context, MaterialPageRoute(builder: (context) => Mylist(id)));
           } else {
-            print(loc.text);
+            print(image);
             Fluttertoast.showToast(msg: 'error');
           }
         }

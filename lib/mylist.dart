@@ -8,6 +8,8 @@ import 'API.dart';
 import 'connect.dart';
 import 'parts.dart';
 import 'main.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
 
 class Mylist extends StatefulWidget {
   final String idtext;
@@ -20,6 +22,8 @@ class Mylist extends StatefulWidget {
 class _MylistState extends State<Mylist> {
   var _maxItem;
   late Future<List<Parts>> futurelist;
+  FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+
 
   @override
   void initState() {
@@ -79,7 +83,7 @@ class _MylistState extends State<Mylist> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
+                  child: Image.memory(
                     image,
                     width: 200,
                     height: 200,
@@ -110,6 +114,12 @@ class _MylistState extends State<Mylist> {
                   },
                   icon: const Icon(Icons.close),
                   label: const Text('close'),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                  },
+                  icon: Icon(Icons.add),
+                  label: const Text('led on'),
                 ),
               ],
             ),
@@ -239,6 +249,9 @@ class _MylistState extends State<Mylist> {
             title: Text(item.name),
             subtitle: Text(item.category),
             leading: Image.memory(base64Decode(item.image)),
+            onTap: (){
+              showPopup(context, item.name, base64Decode(item.image), item.category);
+            },
           );
         } else if (snapshot.hasError) {
           print("${snapshot.error}");
