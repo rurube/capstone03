@@ -10,11 +10,11 @@ class Parts{
    //String mesg;
    //String location;
    //String id;
-   //String image;
+   var image;
    //String wgt;
 
   //Parts({required this.idx, required this.name, required this.category, required this.color, required this.rest, required this.mesg, required this.location, required this.id, required this.image, required this.wgt});
-  Parts({required this.name, required this.category});
+  Parts({required this.name, required this.category, required this.image});
   factory Parts.fromJson(Map<String, dynamic> json) {
     return Parts(
         //idx: json['idx'],
@@ -25,7 +25,7 @@ class Parts{
         //mesg: json['mesg'],
         //location: json['location'],
         //id: json['id'],
-        //image: json['image'],
+        image: json['image'],
         //wgt: json['wgt']
     );
   }

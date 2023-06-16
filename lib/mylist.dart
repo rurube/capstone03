@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:capstone_design_project/partslist.dart';
+import 'package:capstone_design_project/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_design_project/list_register.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'API.dart';
+import 'connect.dart';
 import 'parts.dart';
+import 'main.dart';
 
 class Mylist extends StatefulWidget {
   final String idtext;
-
-
   const Mylist(this.idtext, {super.key});
 
   @override
@@ -19,12 +19,13 @@ class Mylist extends StatefulWidget {
 
 class _MylistState extends State<Mylist> {
   var _maxItem;
+  late Future<List<Parts>> futurelist;
+
   @override
   void initState() {
     super.initState();
-    getParts();
+    futurelist = getParts();
   }
-
   Future<Names> getList() async {
     var resName;
     late Names names;
@@ -140,6 +141,16 @@ class _MylistState extends State<Mylist> {
           return _getSheet(index);
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          var id = widget.idtext;
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Listregister(id)));
+        },
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+
+      ),
       drawer: Drawer(
           child: FutureBuilder(
         future: getList(),
@@ -182,9 +193,9 @@ class _MylistState extends State<Mylist> {
                   Icons.home,
                   color: Colors.grey[850],
                 ),
-                title: Text('Home'),
+                title: Text('Logout'),
                 onTap: () {
-                  print('Home is clicked');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyPage()));
                 },
                 trailing: Icon(Icons.add),
               ),
@@ -195,7 +206,7 @@ class _MylistState extends State<Mylist> {
                 ),
                 title: Text('Setting'),
                 onTap: () {
-                  print('Setting is clicked');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Settingpage()));
                 },
                 trailing: Icon(Icons.add),
               ),
@@ -204,9 +215,9 @@ class _MylistState extends State<Mylist> {
                   Icons.question_answer,
                   color: Colors.grey[850],
                 ),
-                title: Text('Q&A'),
+                title: Text('Connect'),
                 onTap: () {
-                  print('Q&A is clicked');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Conn()));
                 },
                 trailing: Icon(Icons.add),
               ),
@@ -219,7 +230,7 @@ class _MylistState extends State<Mylist> {
 
   Widget _getSheet(index) {
     return FutureBuilder<List<Parts>>(
-      future: getParts(),
+      future: futurelist,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final item = snapshot.data![index ~/ 2];
@@ -227,6 +238,7 @@ class _MylistState extends State<Mylist> {
           return ListTile(
             title: Text(item.name),
             subtitle: Text(item.category),
+            leading: Image.memory(base64Decode(item.image)),
           );
         } else if (snapshot.hasError) {
           print("${snapshot.error}");

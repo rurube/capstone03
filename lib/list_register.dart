@@ -9,16 +9,16 @@ import 'package:http/http.dart' as http;
 import 'API.dart';
 import 'package:image_picker/image_picker.dart';
 
-class listregister extends StatefulWidget {
+class Listregister extends StatefulWidget {
   final String id;
 
-  const listregister(this.id, {super.key});
+  const Listregister(this.id, {super.key});
 
   @override
-  State<listregister> createState() => _listregisterState();
+  State<Listregister> createState() => _ListregisterState();
 }
 
-class _listregisterState extends State<listregister> {
+class _ListregisterState extends State<Listregister> {
   Rx<XFile> image = XFile('').obs;
   RxBool isPicked = false.obs;
   TextEditingController name = TextEditingController();
@@ -31,9 +31,10 @@ class _listregisterState extends State<listregister> {
     XFile? _file;
 
     if (isCamera) {
-      _file = await ImagePicker().pickImage(source: ImageSource.camera);
+      _file = await ImagePicker().pickImage(source: ImageSource.camera, maxHeight: 75, imageQuality: 10,);
+
     } else {
-      _file = await ImagePicker().pickImage(source: ImageSource.gallery);
+      _file = await ImagePicker().pickImage(source: ImageSource.gallery, maxHeight: 75, imageQuality: 10,);
     }
 
     if (_file != null) {

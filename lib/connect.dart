@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
+import 'device_screen.dart';
 class Conn extends StatefulWidget {
 
   const Conn({Key? key}) : super(key: key);
@@ -103,11 +105,15 @@ class _ConnState extends State<Conn> {
       ),
     );
   }
-
   /* 장치 아이템을 탭 했을때 호출 되는 함수 */
   void onTap(ScanResult r) {
     // 단순히 이름만 출력
     print('${r.device.name}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DeviceScreen(device: r.device)),
+    );
+
   }
 
   /* 장치 아이템 위젯 */
