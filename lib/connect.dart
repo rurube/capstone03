@@ -1,17 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
 import 'device_screen.dart';
 class Conn extends StatefulWidget {
 
   const Conn({Key? key}) : super(key: key);
 
   @override
-  State<Conn> createState() => _ConnState();
+  State<Conn> createState() => ConnState();
 }
 
-class _ConnState extends State<Conn> {
+class ConnState extends State<Conn> {
   FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
   List<ScanResult> scanResultList = [];
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -9,10 +10,10 @@ class DeviceScreen extends StatefulWidget {
   final BluetoothDevice device;
 
   @override
-  _DeviceScreenState createState() => _DeviceScreenState();
+  DeviceScreenState createState() => DeviceScreenState();
 }
 
-class _DeviceScreenState extends State<DeviceScreen> {
+class DeviceScreenState extends State<DeviceScreen> {
   // flutterBlue
   FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
 
@@ -67,14 +68,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
     }
   }
 
-  Future<void> sendMessage(bleServices) async {
-    // Reads all characteristics
-    var characteristics = bleServices.characteristics;
-    for(BluetoothCharacteristic c in characteristics) {
-      await c.write([32]);
-    }
-  }
-
   /* 연결 상태 갱신 */
   setBleConnectionState(BluetoothDeviceState event) {
     switch (event) {
@@ -100,6 +93,12 @@ class _DeviceScreenState extends State<DeviceScreen> {
     setState(() {});
   }
 
+  Future<void> sendMessage(service, msg) async {
+    var characteristics = service.characteristics;
+    for(BluetoothCharacteristic c in characteristics) {
+      await c.write(utf8.encode(msg));
+    }
+  }
   /* 연결 시작 */
   Future<bool> connect() async {
     Future<bool>? returnValue;
@@ -133,7 +132,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
         setState(() {
           bluetoothService = bleServices;
         });
-        sendMessage(bleServices);
         // 각 속성을 디버그에 출력
         for (BluetoothService service in bleServices) {
           print('============================================');

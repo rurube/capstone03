@@ -5,8 +5,17 @@ import 'mylist.dart';
 import 'package:http/http.dart' as http;
 import 'API.dart';
 import 'register.dart';
+import 'package:capstone_design_project/ble_provider.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  MultiProvider(
+    providers:[
+      ChangeNotifierProvider(create:(_)=>BleProvider()),
+    ],
+    child:MyApp(),
+  )
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

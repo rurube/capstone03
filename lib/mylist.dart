@@ -8,8 +8,9 @@ import 'API.dart';
 import 'connect.dart';
 import 'parts.dart';
 import 'main.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
+import 'ble_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:capstone_design_project/ble_provider.dart';
 
 class Mylist extends StatefulWidget {
   final String idtext;
@@ -22,7 +23,7 @@ class Mylist extends StatefulWidget {
 class _MylistState extends State<Mylist> {
   var _maxItem;
   late Future<List<Parts>> futurelist;
-  FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+  late BleProvider _bleProvider;
 
 
   @override
@@ -70,6 +71,7 @@ class _MylistState extends State<Mylist> {
   }
 
   void showPopup(context, title, image, description) {
+    _bleProvider = Provider.of<BleProvider>(context, listen: false);
     showDialog(
       context: context,
       builder: (context) {
@@ -117,6 +119,8 @@ class _MylistState extends State<Mylist> {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
+                    _bleProvider.setService();
+                    _bleProvider.sendMessage(_bleProvider.bluetoothService, 1);
                   },
                   icon: Icon(Icons.add),
                   label: const Text('led on'),
