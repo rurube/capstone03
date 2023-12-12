@@ -1,6 +1,6 @@
-# capstone_design_project
+# 무게 감지 서랍
 
-A new Flutter project.
+23년도 1학기 캡스톤디자인 프로젝트
 
 ## Getting Started
 
