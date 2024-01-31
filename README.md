@@ -8,3 +8,6 @@
   - 백엔드 개발(PHP)
   - Flutter 앱 개발(DART)
   - 3D Modeling(Fusion 360)
+ 
+**서랍 시연 영상** [LINK(Youtube)](https://youtube.com/shorts/OOeIeRBT0z4?feature=share]
+**어플 시연 영상** [LINK(Youtube)](https://youtu.be/9tZNWm3bi00)
